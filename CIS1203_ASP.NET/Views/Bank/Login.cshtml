@@ -1,0 +1,34 @@
+﻿@model CIS2103_ASP.NET.Models.BankAccount
+
+@{
+    ViewBag.Title = "Login";
+}
+
+<div class="container my-5">
+    <h2>@ViewBag.Title</h2>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="my-4">
+                @Html.LabelFor(model => model.Account_No, htmlAttributes: new { @class = "font-weight-bold" })
+                @Html.EditorFor(model => model.Account_No, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Account_No, "", new { @class = "d-block text-danger my-2" })
+            </div>
+
+            <div class="my-4">
+                @Html.LabelFor(model => model.PIN, htmlAttributes: new { @class = "font-weight-bold" })
+                @Html.EditorFor(model => model.PIN, new { htmlAttributes = new { @class = "form-control", @type = "password" } })
+                @Html.ValidationMessageFor(model => model.PIN, "", new { @class = "d-block text-danger my-2" })
+            </div>
+
+            <div class="my-4">
+                <input type="submit" value="Login" class="btn btn-outline-primary" />
+            </div>
+        </div>
+    }
+</div>

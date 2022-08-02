@@ -1,0 +1,243 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="CIS2103_BankModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Account">
+          <Key>
+            <PropertyRef Name="Account_No" />
+          </Key>
+          <Property Name="Account_No" Type="char" MaxLength="12" Nullable="false" />
+          <Property Name="PIN" Type="bigint" Nullable="false" />
+          <Property Name="Holder_Fname" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Holder_Lname" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Balance" Type="decimal" Precision="20" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Transaction">
+          <Key>
+            <PropertyRef Name="Transaction_ID" />
+          </Key>
+          <Property Name="Transaction_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Account_No" Type="char" MaxLength="12" Nullable="false" />
+          <Property Name="Amount" Type="decimal" Precision="20" Scale="2" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="300" Nullable="false" />
+          <Property Name="Date" Type="datetime" Nullable="false" />
+          <Property Name="Type" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Transfer">
+          <Key>
+            <PropertyRef Name="Transfer_ID" />
+          </Key>
+          <Property Name="Transfer_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Transaction_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Receiver_Account_Number" Type="char" MaxLength="12" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Receiver_Account_Number">
+          <End Role="Account" Type="Self.Account" Multiplicity="1" />
+          <End Role="Transfer" Type="Self.Transfer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Account_No" />
+            </Principal>
+            <Dependent Role="Transfer">
+              <PropertyRef Name="Receiver_Account_Number" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Transaction_ID">
+          <End Role="Transaction" Type="Self.Transaction" Multiplicity="1" />
+          <End Role="Transfer" Type="Self.Transfer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Transaction">
+              <PropertyRef Name="Transaction_ID" />
+            </Principal>
+            <Dependent Role="Transfer">
+              <PropertyRef Name="Transaction_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Transaction_Account_No_FK">
+          <End Role="Account" Type="Self.Account" Multiplicity="1" />
+          <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Account_No" />
+            </Principal>
+            <Dependent Role="Transaction">
+              <PropertyRef Name="Account_No" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="CIS2103_BankModelStoreContainer">
+          <EntitySet Name="Account" EntityType="Self.Account" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Transaction" EntityType="Self.Transaction" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Transfer" EntityType="Self.Transfer" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Receiver_Account_Number" Association="Self.FK_Receiver_Account_Number">
+            <End Role="Account" EntitySet="Account" />
+            <End Role="Transfer" EntitySet="Transfer" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Transaction_ID" Association="Self.FK_Transaction_ID">
+            <End Role="Transaction" EntitySet="Transaction" />
+            <End Role="Transfer" EntitySet="Transfer" />
+          </AssociationSet>
+          <AssociationSet Name="Transaction_Account_No_FK" Association="Self.Transaction_Account_No_FK">
+            <End Role="Account" EntitySet="Account" />
+            <End Role="Transaction" EntitySet="Transaction" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="CIS2103_BankModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Account">
+          <Key>
+            <PropertyRef Name="Account_No" />
+          </Key>
+          <Property Name="Account_No" Type="String" MaxLength="12" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="PIN" Type="Int64" Nullable="false" />
+          <Property Name="Balance" Type="Decimal" Precision="20" Scale="2" Nullable="false" />
+          <NavigationProperty Name="Transfers" Relationship="Self.FK_Receiver_Account_Number" FromRole="Account" ToRole="Transfer" />
+          <NavigationProperty Name="Transactions" Relationship="Self.Transaction_Account_No_FK" FromRole="Account" ToRole="Transaction" />
+          <Property Name="Holder_Fname" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Holder_Lname" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Transaction">
+          <Key>
+            <PropertyRef Name="Transaction_ID" />
+          </Key>
+          <Property Name="Transaction_ID" Type="Guid" Nullable="false" />
+          <Property Name="Account_No" Type="String" MaxLength="12" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="Amount" Type="Decimal" Precision="20" Scale="2" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="300" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Account" Relationship="Self.Transaction_Account_No_FK" FromRole="Transaction" ToRole="Account" />
+          <NavigationProperty Name="Transfers" Relationship="Self.FK_Transaction_ID" FromRole="Transaction" ToRole="Transfer" />
+        </EntityType>
+        <EntityType Name="Transfer">
+          <Key>
+            <PropertyRef Name="Transfer_ID" />
+          </Key>
+          <Property Name="Transfer_ID" Type="Guid" Nullable="false" />
+          <Property Name="Transaction_ID" Type="Guid" Nullable="false" />
+          <Property Name="Receiver_Account_Number" Type="String" MaxLength="12" FixedLength="true" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Account" Relationship="Self.FK_Receiver_Account_Number" FromRole="Transfer" ToRole="Account" />
+          <NavigationProperty Name="Transaction" Relationship="Self.FK_Transaction_ID" FromRole="Transfer" ToRole="Transaction" />
+        </EntityType>
+        <Association Name="FK_Receiver_Account_Number">
+          <End Role="Account" Type="Self.Account" Multiplicity="1" />
+          <End Role="Transfer" Type="Self.Transfer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Account_No" />
+            </Principal>
+            <Dependent Role="Transfer">
+              <PropertyRef Name="Receiver_Account_Number" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Transaction_Account_No_FK">
+          <End Role="Account" Type="Self.Account" Multiplicity="1" />
+          <End Role="Transaction" Type="Self.Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Account">
+              <PropertyRef Name="Account_No" />
+            </Principal>
+            <Dependent Role="Transaction">
+              <PropertyRef Name="Account_No" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Transaction_ID">
+          <End Role="Transaction" Type="Self.Transaction" Multiplicity="1" />
+          <End Role="Transfer" Type="Self.Transfer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Transaction">
+              <PropertyRef Name="Transaction_ID" />
+            </Principal>
+            <Dependent Role="Transfer">
+              <PropertyRef Name="Transaction_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="CIS2103_BankEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Accounts" EntityType="Self.Account" />
+          <EntitySet Name="Transactions" EntityType="Self.Transaction" />
+          <EntitySet Name="Transfers" EntityType="Self.Transfer" />
+          <AssociationSet Name="FK_Receiver_Account_Number" Association="Self.FK_Receiver_Account_Number">
+            <End Role="Account" EntitySet="Accounts" />
+            <End Role="Transfer" EntitySet="Transfers" />
+          </AssociationSet>
+          <AssociationSet Name="Transaction_Account_No_FK" Association="Self.Transaction_Account_No_FK">
+            <End Role="Account" EntitySet="Accounts" />
+            <End Role="Transaction" EntitySet="Transactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Transaction_ID" Association="Self.FK_Transaction_ID">
+            <End Role="Transaction" EntitySet="Transactions" />
+            <End Role="Transfer" EntitySet="Transfers" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="CIS2103_BankModelStoreContainer" CdmEntityContainer="CIS2103_BankEntities">
+          <EntitySetMapping Name="Accounts">
+            <EntityTypeMapping TypeName="CIS2103_BankModel.Account">
+              <MappingFragment StoreEntitySet="Account">
+                <ScalarProperty Name="Holder_Lname" ColumnName="Holder_Lname" />
+                <ScalarProperty Name="Holder_Fname" ColumnName="Holder_Fname" />
+                <ScalarProperty Name="Account_No" ColumnName="Account_No" />
+                <ScalarProperty Name="PIN" ColumnName="PIN" />
+                <ScalarProperty Name="Balance" ColumnName="Balance" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Transactions">
+            <EntityTypeMapping TypeName="CIS2103_BankModel.Transaction">
+              <MappingFragment StoreEntitySet="Transaction">
+                <ScalarProperty Name="Transaction_ID" ColumnName="Transaction_ID" />
+                <ScalarProperty Name="Account_No" ColumnName="Account_No" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Transfers">
+            <EntityTypeMapping TypeName="CIS2103_BankModel.Transfer">
+              <MappingFragment StoreEntitySet="Transfer">
+                <ScalarProperty Name="Transfer_ID" ColumnName="Transfer_ID" />
+                <ScalarProperty Name="Transaction_ID" ColumnName="Transaction_ID" />
+                <ScalarProperty Name="Receiver_Account_Number" ColumnName="Receiver_Account_Number" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

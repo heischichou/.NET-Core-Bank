@@ -1,0 +1,26 @@
+﻿@using CIS2103_ASP.NET.Models
+
+@{
+    var account = (BankAccount)Session["Holder"];
+    var account_no = account.Account_No;
+    var last_numbers = account_no.Substring(account_no.Length - 2);
+    var holder_name = account.Holder_Fname + " " + account.Holder_Lname;
+    var balance = account.Balance;
+    ViewBag.Title = "Home";
+}
+
+<div class="container my-5">
+    <div class="text-center">
+        <h1>UNITED BANK OF MONEY</h1>
+        <h2>Welcome back, @holder_name!</h2>
+        <h4>Account Number: #### #### ##@last_numbers</h4>
+        <h5>Remaining Balance: @balance</h5>
+    </div>
+    <div class="w-50 my-5 mx-auto">
+        @Html.ActionLink("Deposit", "Deposit", "Bank", new { @class = "card p-5 my-3 h5 text-center" })
+        @Html.ActionLink("Withdraw", "Withdraw", "Bank", new { @class = "card p-5 my-3 h5 text-center" })
+        @Html.ActionLink("Transfer", "Transfer", "Bank", new { @class = "card p-5 my-3 h5 text-center" })
+        @Html.ActionLink("Transactions", "TransactionHistory", "Bank", new { @class = "card p-5 my-3 h5 text-center" })
+        @Html.ActionLink("Log Out", "Logout", "Bank", new { @class = "card p-5 my-3 h5 text-center" })
+    </div>
+</div>

@@ -1,0 +1,56 @@
+﻿@using CIS2103_ASP.NET.Models
+@model CIS2103_ASP.NET.Models.TransferEntry
+
+@{
+    ViewBag.Title = "Transfer";
+    var account = (BankAccount)Session["Holder"];
+    var balance = account.Balance;
+}
+
+<div class="container my-5">
+    <h2>@ViewBag.Title</h2>
+    <p>Transfer funds to another account here.</p>
+
+    @using (Html.BeginForm("TransferAmount", "Bank", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            @Html.HiddenFor(model => model.PIN, new { @class = "d-none" })
+
+            <div class="my-4">
+                <label class="font-weight-bold">Remaining Balance</label>
+                <div>@balance</div>
+            </div>
+
+            <div class="my-4">
+                @Html.LabelFor(model => model.Receiver_No, new { @class = "font-weight-bold" })
+                @Html.EditorFor(model => model.Receiver_No, new { htmlAttributes = new { @class = "form-control", @required = "true" } })
+                @Html.ValidationMessageFor(model => model.Receiver_No, "", new { @class = "d-block text-danger my-2" })
+                <div class="text-danger my-2">@ViewBag.ReceiverError</div>
+            </div>
+
+            <div class="my-4">
+                @Html.LabelFor(model => model.Amount, new { @class = "font-weight-bold" })
+                @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control", @required = "true" } })
+                @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "d-block text-danger my-2" })
+                <div class="text-danger my-2">@ViewBag.AmountError</div>
+            </div>
+
+            <div class="my-4">
+                @Html.LabelFor(model => model.ConfirmPIN, new { @class = "font-weight-bold" })
+                @Html.EditorFor(model => model.ConfirmPIN, new { htmlAttributes = new { @class = "form-control", @type = "password", @required = "true" } })
+                @Html.ValidationMessageFor(model => model.ConfirmPIN, "", new { @class = "d-block text-danger my-2" })
+            </div>
+
+            <div class="my-4">
+                <button type="submit" value="TransferAmount" class="btn btn-outline-primary">Transfer Amount</button>
+                <div class="text-danger my-2">@ViewBag.ErrorMessage</div>
+            </div>
+        </div>
+    }
+</div>

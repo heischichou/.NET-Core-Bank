@@ -1,0 +1,39 @@
+﻿@model List<CIS1203_ASP.NET.Transaction>
+
+@{
+    ViewBag.Title = "Transaction History";
+}
+
+<div class="container my-5">
+    <h2>@ViewBag.Title</h2>
+    <p>View your latest transactions here.</p>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Transaction ID</th>
+                <th scope="col">Transaction Details</th>
+                <th scope="col">Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Any() == false)
+            {
+                <tr>
+                    <td colspan="3">No transactions logs found.</td>
+                </tr>
+            }
+            else
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(itemData => item.Transaction_ID)</td>
+                        <td>@Html.DisplayFor(itemData => item.Name)</td>
+                        <td>@Html.DisplayFor(itemData => item.Date)</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
